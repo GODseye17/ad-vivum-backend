@@ -9,3 +9,5 @@ scrapy
 fastapi
 pydantic
 uvicorn
+google-generativeai
+
