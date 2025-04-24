@@ -26,8 +26,8 @@ def load_dataset(name):
 # 🔹 Query Handler
 def answer_query(query, source="both"):
     print("Fetch fresh articles for:", query)
-    subprocess.run(["python", "datasets/pubmed/fetch_pubmed.py", query], check=True)
-    subprocess.run(["python", "datasets/pubmed/store_faiss_pubmed.py"], check=True)
+    subprocess.run(["python3", "datasets/pubmed/fetch_pubmed.py", query], check=True)
+    subprocess.run(["python3", "datasets/pubmed/store_faiss_pubmed.py"], check=True)
 
     k = 3
     query_vector = embeddings.embed_query(query)

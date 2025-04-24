@@ -1,0 +1,11 @@
+dotenv
+faiss-cpu
+google
+itemadapter
+langchain
+langchain_huggingface
+numpy==1.26.4
+scrapy
+fastapi
+pydantic
+uvicorn
