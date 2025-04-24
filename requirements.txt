@@ -10,4 +10,4 @@ fastapi
 pydantic
 uvicorn
 google-generativeai
-
+langchain-community
