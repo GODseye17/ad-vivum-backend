@@ -6,9 +6,10 @@ import google.generativeai as genai  # Google Gemini
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
 from langchain_huggingface import HuggingFaceEmbeddings
+from sentence_transformers import SentenceTransformer
 
 
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+embeddings = SentenceTransformer("models/all-MiniLM-L6-v2")
 
 # 🔹 Initialize Google Gemini API (replace YOUR_API_KEY)
 genai.configure(api_key="AIzaSyA-AfbLuDw6cJbWkU3w8ADhNfXj6DGEQ0Y")
