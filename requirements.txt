@@ -11,3 +11,4 @@ pydantic
 uvicorn
 google-generativeai
 langchain-community
+huggingface_hub[hf_xet] 
