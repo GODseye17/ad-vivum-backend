@@ -4,7 +4,7 @@ import numpy as np
 from langchain.embeddings import HuggingFaceEmbeddings  # Use Hugging Face instead of OpenAI
 
 # 🔹 Load scraped data
-with open("scraped_data.json", "r") as f:
+with open("datasets/pubmed/scraped_data_pubmed.json", "r") as f:
     articles = json.load(f)
 
 # 🔹 Initialize Hugging Face Embeddings
@@ -24,5 +24,5 @@ index = faiss.IndexFlatL2(dimension)
 index.add(np.array(article_vectors, dtype=np.float32))
 
 # 🔹 Save FAISS index
-faiss.write_index(index, "news_index.faiss")
+faiss.write_index(index, "datasets/pubmed/news_index_pubmed.faiss")
 print("✅ FAISS index saved as news_index.faiss")

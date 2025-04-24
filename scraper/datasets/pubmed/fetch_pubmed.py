@@ -1,5 +1,8 @@
 import requests
 import json
+import sys
+
+term = sys.argv[1]
 
 # 🔹 API Endpoints
 SEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
@@ -8,7 +11,7 @@ DETAILS_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 # 🔹 Step 1: Get Article IDs
 search_params = {
     "db": "pubmed",
-    "term": "Breast Cancer",  # Change this search query
+    "term": term,  # Change this search query
     "retmode": "json",
     "retmax": 10,  # Fetch 10 articles
 }
@@ -38,7 +41,7 @@ for article_id in article_ids:
     articles.append(article_data)
 
 # 🔹 Step 3: Save to JSON
-with open("scraped_data.json", "w") as f:
+with open("datasets/pubmed/scraped_data_pubmed.json", "w") as f:
     json.dump(articles, f, indent=4)
 
-print("✅ Articles saved to scraped_data.json")
+print("✅ Articles saved to scraped_data_pubmed.json")
