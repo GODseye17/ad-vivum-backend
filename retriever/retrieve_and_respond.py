@@ -32,7 +32,7 @@ def answer_query(query, source="both"):
     subprocess.run(["python3", "datasets/pubmed/store_faiss_pubmed.py"], check=True)
 
     k = 3
-    query_vector = embeddings.embed_query(query)
+    query_vector = embeddings.encode([query])[0]
     all_articles = []
 
     if source in ["pubmed", "both"]:
