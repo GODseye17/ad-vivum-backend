@@ -36,6 +36,3 @@ def get_query_response(request: QueryRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))  # Railway sets PORT; 8000 for local
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
