@@ -4,6 +4,8 @@ import json
 import subprocess
 import google.generativeai as genai  # Google Gemini
 import requests
+from fastapi import HTTPException
+
 #from langchain_community.embeddings import HuggingFaceEmbeddings
 
 #from langchain_huggingface import HuggingFaceEmbeddings
@@ -70,12 +72,28 @@ def answer_query(query, source="both"):
     print("Fetch fresh articles for:", query)
     articles = fetch_pubmed_articles(query)
     abstracts = [article["abstract"] for article in articles]
+    
+    if not abstracts:
+        raise HTTPException(status_code=400, detail="No articles found.")
+    
     vectors = embeddings.encode(abstracts)
+    print(f"Generated vectors for {len(abstracts)} abstracts.")
+
     d = vectors.shape[1]
+    print(f"Vector dimensionality: {d}")
+
+    if d == 0:
+        raise HTTPException(status_code=500, detail="Vector dimensionality is 0. Check your embedding model.")
+
     index = faiss.IndexFlatL2(d)
     index.add(np.array(vectors).astype(np.float32))
+    
     query_vector = embeddings.encode([query])[0].astype(np.float32)
     _, I = index.search(np.array([query_vector]), k=min(3, len(abstracts)))
+
+    # Ensure that there are enough articles to return
+    if len(I[0]) == 0:
+        raise HTTPException(status_code=500, detail="No results found in FAISS search.")
 
     selected_abstracts = [abstracts[i] for i in I[0]]
     context = "\n\n".join(selected_abstracts)
@@ -83,6 +101,7 @@ def answer_query(query, source="both"):
 
     response = model.generate_content(prompt)
     return response.text
+
 
 # 🔹 CLI Usage
 if __name__ == "__main__":
