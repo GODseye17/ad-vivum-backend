@@ -76,14 +76,15 @@ def process_query_background(query_text: str):
         responses_cache[query_text] = f"Error: {str(e)}"
 
 @app.post("/query")
-def get_query_response(request: QueryRequest, background_tasks: BackgroundTasks):
-    if request.query in responses_cache:
-        # Already processed!
-        return {"response": responses_cache[request.query]}
-    
-    # Start background task
-    background_tasks.add_task(process_query_background, request.query)
-    return {"status": "processing", "message": "Generating response, please retry in a few seconds."}
+def get_query_response(request: QueryRequest):
+    try:
+        # Call the same answer_query function from your script
+        response = answer_query(request.query, "pubmed")  # If selected isn't used, keep it None
+        return {"response": response}
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=500, detail=f"Error during subprocess: {e}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
