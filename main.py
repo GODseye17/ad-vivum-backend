@@ -659,6 +659,79 @@ async def answer_query_from_stored(request: QueryRequest):
         logger.error(f"Error in query processing: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/topic/{topic_id}/articles")
+async def get_topic_articles(topic_id: str, limit: int = 100, offset: int = 0):
+    """
+    Fetch all articles for a specific topic
+    
+    Args:
+        topic_id: The UUID of the topic
+        limit: Maximum number of articles to return (default: 100)
+        offset: Number of articles to skip (for pagination)
+        
+    Returns:
+        List of articles with their metadata and content
+    """
+    try:
+        # Check if Supabase is connected
+        if not supabase:
+            raise HTTPException(
+                status_code=503,
+                detail="Database connection not available"
+            )
+            
+        # First verify the topic exists
+        topic_result = supabase.table("topics").select("*").eq("id", topic_id).execute()
+        
+        if not topic_result.data:
+            raise HTTPException(
+                status_code=404,
+                detail="Topic not found"
+            )
+            
+        # Check if data fetching is complete
+        status = check_topic_fetch_status(topic_id)
+        if status != "completed":
+            return {
+                "topic_id": topic_id,
+                "status": status,
+                "articles": [],
+                "message": "Data is still being processed or had an error"
+            }
+        
+        # Fetch articles with pagination
+        articles_result = supabase.table("articles") \
+            .select("*") \
+            .eq("topic_id", topic_id) \
+            .range(offset, offset + limit - 1) \
+            .execute()
+            
+        # Get the total count (for pagination info)
+        count_result = supabase.table("articles") \
+            .select("id", count="exact") \
+            .eq("topic_id", topic_id) \
+            .execute()
+            
+        total_count = count_result.count if hasattr(count_result, "count") else len(articles_result.data)
+        
+        return {
+            "topic_id": topic_id,
+            "status": "completed",
+            "articles": articles_result.data,
+            "pagination": {
+                "total": total_count,
+                "limit": limit,
+                "offset": offset,
+                "has_more": (offset + limit) < total_count
+            }
+        }
+        
+    except HTTPException:
+        raise  # Re-raise HTTP exceptions
+    except Exception as e:
+        logger.error(f"Error fetching articles for topic {topic_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/topic/{topic_id}/status")
 async def check_topic_status(topic_id: str):
     """
