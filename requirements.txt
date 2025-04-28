@@ -11,4 +11,9 @@ pydantic
 uvicorn
 google-generativeai
 langchain-community
-huggingface_hub[hf_xet] 
+huggingface_hub[hf_xet]
+python-dotenv
+aiohttp
+certifi
+supabase
+httpx
