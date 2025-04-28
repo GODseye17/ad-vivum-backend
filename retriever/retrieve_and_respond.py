@@ -28,7 +28,7 @@ def fetch_pubmed_articles(term):
         "db": "pubmed",
         "term": term,
         "retmode": "json",
-        "retmax": 5,
+        "retmax": 6,
     }
 
     response = requests.get(SEARCH_URL, params=search_params)
