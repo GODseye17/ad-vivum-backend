@@ -517,11 +517,11 @@ async def fetch_topic_data(request: TopicRequest, background_tasks: BackgroundTa
             )
         
         # Limit concurrent tasks to prevent overload
-        if len(background_tasks_status) >= 5:  # Adjust based on Railway resources
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Too many processing tasks. Please try again later."
-            )
+        # if len(background_tasks_status) >= 5:  # Adjust based on Railway resources
+        #     raise HTTPException(
+        #         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        #         detail="Too many processing tasks. Please try again later."
+        #     )
         
         # Generate a unique topic ID
         topic_id = str(uuid.uuid4())
