@@ -435,7 +435,6 @@ async def answer_from_stored_data(query: str, topic_id: str, conversation_contex
         else:
             prompt = """You are a medical research assistant that answers questions based on PubMed articles.
             Use only the information provided in the articles to answer questions.
-            If the answer cannot be found in the articles, acknowledge this limitation.
             Cite specific articles when providing information.
             Be concise, direct, and helpful.
             
